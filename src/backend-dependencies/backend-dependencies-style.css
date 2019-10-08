@@ -1,0 +1,9 @@
+ol {
+  list-style: none;
+  border: 1px solid white;
+}
+
+div > li {
+  font-family: 'Courier New', Courier, monospace;
+  color: red;
+}

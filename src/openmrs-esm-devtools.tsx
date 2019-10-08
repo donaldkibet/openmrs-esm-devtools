@@ -1,5 +1,5 @@
 import "./set-public-path";
-import "./openmrs-backend-dependencies";
+import "./backend-dependencies/openmrs-backend-dependencies.ts";
 import React from "react";
 import ReactDOM from "react-dom";
 import Root from "./root.component";
