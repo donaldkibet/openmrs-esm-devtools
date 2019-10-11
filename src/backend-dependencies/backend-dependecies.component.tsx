@@ -11,54 +11,77 @@ export default function BackendModule(props: BackendModulesProps) {
   return (
     <div className={styles.importMap}>
       <div className={backendStyles}>
-        <h5>Missing openmrs backend modules</h5>
-        <ol>
-          {Object.keys(missingBackedModules).map(key => {
-            return (
-              <div>
-                {missingBackedModules[key].MissingModules.length > 0 && (
-                  <li>
-                    {missingBackedModules[key].moduleName}
-                    <ul>
-                      {Object.values(
-                        missingBackedModules[key].MissingModules
-                      ).map(missingModule => {
-                        return <li>{missingModule}</li>;
-                      })}
-                    </ul>
-                  </li>
-                )}
-              </div>
-            );
-          })}
-        </ol>
+        <h4>Missing openmrs backend modules</h4>
 
-        <h5>Modules with wrong versions installed</h5>
-        <ol>
-          {Object.keys(misMatchingBackendModules).map(key => {
-            return (
-              <div>
+        {Object.keys(missingBackedModules).map(key => {
+          return (
+            <table>
+              <tr>
+                {missingBackedModules[key].MissingModules.length >
+                  0 && (
+                  <tr>
+                    <tr>
+                      <td colSpan={3}>
+                        <b>{missingBackedModules[key].moduleName}</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><b>Module Name</b></td>
+                      <td><b>Version</b></td>
+                    </tr>
+                    {Object.values(
+                      missingBackedModules[key].MissingModules
+                    ).map((module: any) => {
+                      return (
+                        <tr>
+                          <td>{module.uuid}</td>
+                          <td>{module.version}</td>
+                        </tr>
+                      );
+                    })}
+                  </tr>
+                )}
+              </tr>
+            </table>
+          );
+        })}
+
+        <h4>Modules with wrong versions installed</h4>
+
+        {Object.keys(misMatchingBackendModules).map(key => {
+          return (
+            <table>
+              <tr>
                 {misMatchingBackendModules[key].missMatchingModules.length >
                   0 && (
-                  <li>
-                    {misMatchingBackendModules[key].moduleName}
-                    <ul>
-                      {Object.values(
-                        misMatchingBackendModules[key].missMatchingModules
-                      ).map((module: any) => {
-                        return (
-                          <li>
-                            {`${module.uuid} version ${module.installedVersion} installed but requires ${module.requiredVersion}`}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </li>
+                  <tr>
+                    <tr>
+                      <td colSpan={3}>
+                        <b>{misMatchingBackendModules[key].moduleName}</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Module Name</td>
+                      <td>Installed Version</td>
+                      <td>Required Version</td>
+                    </tr>
+                    {Object.values(
+                      misMatchingBackendModules[key].missMatchingModules
+                    ).map((module: any) => {
+                      return (
+                        <tr>
+                          <td>{module.uuid}</td>
+                          <td>{module.installedVersion}</td>
+                          <td>{module.requiredVersion}</td>
+                        </tr>
+                      );
+                    })}
+                  </tr>
                 )}
-              </div>
-            );
-          })}
-        </ol>
+              </tr>
+            </table>
+          );
+        })}
       </div>
     </div>
   );
@@ -66,14 +89,12 @@ export default function BackendModule(props: BackendModulesProps) {
 
 function handleBackendModuleErrorToggle(props) {
   Object.keys(misMatchingBackendModules).every(key => {
-    misMatchingBackendModules[key].missMatchingModules.length > 0
-      ? props.toggleOverridden(true)
-      : props.toggleOverridden(false);
+    props.toggleOverridden(
+      misMatchingBackendModules[key].missMatchingModules.length > 0
+    );
   });
   Object.keys(missingBackedModules).every(key => {
-    missingBackedModules[key].MissingModules.length > 0
-      ? props.toggleOverridden(true)
-      : props.toggleOverridden(false);
+    props.toggleOverridden(missingBackedModules[key].MissingModules.length > 0);
   });
 }
 
