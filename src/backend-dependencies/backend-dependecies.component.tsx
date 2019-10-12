@@ -1,7 +1,7 @@
 import React from "react";
 import {
-  missingBackedModules,
-  misMatchingBackendModules
+  missingBackendModules,
+  modulesWithWrongVersion
 } from "./openmrs-backend-dependencies";
 import styles from "../devtools/import-map.styles.css";
 import backendStyles from "./backend-dependencies-style.css";
@@ -13,51 +13,51 @@ export default function BackendModule(props: BackendModulesProps) {
       <div className={backendStyles}>
         <h4>Missing openmrs backend modules</h4>
 
-        {Object.keys(missingBackedModules).map(key => {
+        {Object.keys(missingBackendModules).map(key => {
           return (
             <table>
-              <tr>
-                {missingBackedModules[key].MissingModules.length >
-                  0 && (
+              {missingBackendModules[key].backendModules.length > 0 && (
+                <tr>
                   <tr>
-                    <tr>
-                      <td colSpan={3}>
-                        <b>{missingBackedModules[key].moduleName}</b>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><b>Module Name</b></td>
-                      <td><b>Version</b></td>
-                    </tr>
-                    {Object.values(
-                      missingBackedModules[key].MissingModules
-                    ).map((module: any) => {
+                    <td colSpan={3}>
+                      <b>{missingBackendModules[key].moduleName}</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Module Name</b>
+                    </td>
+                    <td>
+                      <b>Version</b>
+                    </td>
+                  </tr>
+                  {Object.values(missingBackendModules[key].backendModules).map(
+                    (module: any) => {
                       return (
                         <tr>
                           <td>{module.uuid}</td>
                           <td>{module.version}</td>
                         </tr>
                       );
-                    })}
-                  </tr>
-                )}
-              </tr>
+                    }
+                  )}
+                </tr>
+              )}
             </table>
           );
         })}
 
         <h4>Modules with wrong versions installed</h4>
 
-        {Object.keys(misMatchingBackendModules).map(key => {
+        {Object.keys(modulesWithWrongVersion).map(key => {
           return (
             <table>
               <tr>
-                {misMatchingBackendModules[key].missMatchingModules.length >
-                  0 && (
+                {modulesWithWrongVersion[key].backendModules.length > 0 && (
                   <tr>
                     <tr>
                       <td colSpan={3}>
-                        <b>{misMatchingBackendModules[key].moduleName}</b>
+                        <b>{modulesWithWrongVersion[key].moduleName}</b>
                       </td>
                     </tr>
                     <tr>
@@ -66,7 +66,7 @@ export default function BackendModule(props: BackendModulesProps) {
                       <td>Required Version</td>
                     </tr>
                     {Object.values(
-                      misMatchingBackendModules[key].missMatchingModules
+                      modulesWithWrongVersion[key].backendModules
                     ).map((module: any) => {
                       return (
                         <tr>
@@ -88,13 +88,15 @@ export default function BackendModule(props: BackendModulesProps) {
 }
 
 function handleBackendModuleErrorToggle(props) {
-  Object.keys(misMatchingBackendModules).every(key => {
+  Object.keys(modulesWithWrongVersion).every(key => {
     props.toggleOverridden(
-      misMatchingBackendModules[key].missMatchingModules.length > 0
+      modulesWithWrongVersion[key].backendModules.length > 0
     );
   });
-  Object.keys(missingBackedModules).every(key => {
-    props.toggleOverridden(missingBackedModules[key].MissingModules.length > 0);
+  Object.keys(missingBackendModules).every(key => {
+    props.toggleOverridden(
+      missingBackendModules[key].backendModules.length > 0
+    );
   });
 }
 

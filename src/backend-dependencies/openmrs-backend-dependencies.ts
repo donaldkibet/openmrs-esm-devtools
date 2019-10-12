@@ -1,10 +1,10 @@
 import { openmrsFetch } from "@openmrs/esm-api";
 import * as semver from "semver";
-import { difference, isEmpty } from "lodash-es";
+import { difference, isEmpty } from "lodash";
 
 let installedBackendModules: any[] = [];
-let missingBackedModules: MissingBackenModules[] = [];
-let misMatchingBackendModules: any[] = [];
+let missingBackendModules: MissingBackenModules[] = [];
+let modulesWithWrongVersion: any[] = [];
 
 const originalOnload = System.constructor.prototype.onload;
 
@@ -47,16 +47,16 @@ function checkIfModulesAreInstalled(module) {
   let missingBackendModule = getMissingBackendModules(
     module.backendDependencies
   );
-  let InstallAndRequiredModules = getInstalledAndRequiredBackendModules(
+  let installedAndRequiredModules = getInstalledAndRequiredBackendModules(
     module.backendDependencies
   );
-  missingBackedModules.push({
+  missingBackendModules.push({
     moduleName: module.moduleName,
-    MissingModules: missingBackendModule
+    backendModules: missingBackendModule
   });
-  misMatchingBackendModules.push({
+  modulesWithWrongVersion.push({
     moduleName: module.moduleName,
-    missMatchingModules: getMisMatchedBackendModules(InstallAndRequiredModules)
+    backendModules: getMisMatchedBackendModules(installedAndRequiredModules)
   });
 }
 
@@ -71,8 +71,12 @@ function getMissingBackendModules(requiredBackendModules) {
   const installedBackendModuleUuids = installedBackendModules.map(
     res => res.uuid
   );
-  let missingModules = difference(requiredBackendModulesUuids, installedBackendModuleUuids);
-  return requiredBackendModulesUuids.map(key => {
+  let missingModules = difference(
+    requiredBackendModulesUuids,
+    installedBackendModuleUuids
+  );
+  console.log(`missingModules`, missingModules);
+  return missingModules.map(key => {
     return { uuid: key, version: requiredBackendModules[key] };
   });
 }
@@ -129,9 +133,7 @@ interface MisMatchingModules {
 }
 interface MissingBackenModules {
   moduleName: string;
-  MissingModules: BackendModule[];
+  backendModules: BackendModule[];
 }
 
-console.log(missingBackedModules);
-
-export { missingBackedModules, misMatchingBackendModules };
+export { missingBackendModules, modulesWithWrongVersion };
