@@ -2,7 +2,7 @@ import React from "react";
 import {
   missingBackendModules,
   modulesWithWrongVersion
-} from "./openmrs-backend-dependencies";
+} from "../openmrs-backend-dependencies";
 import styles from "../devtools/import-map.styles.css";
 import backendStyles from "./backend-dependencies-style.css";
 
@@ -15,7 +15,7 @@ export default function BackendModule(props: BackendModulesProps) {
 
         {Object.keys(missingBackendModules).map(key => {
           return (
-            <table>
+            <table className={backendStyles.table}>
               {missingBackendModules[key].backendModules.length > 0 && (
                 <tr>
                   <tr>
@@ -89,14 +89,12 @@ export default function BackendModule(props: BackendModulesProps) {
 
 function handleBackendModuleErrorToggle(props) {
   Object.keys(modulesWithWrongVersion).every(key => {
-    props.toggleOverridden(
-      modulesWithWrongVersion[key].backendModules.length > 0
-    );
+    if (modulesWithWrongVersion[key].backendModules.length > 0)
+      props.toggleOverridden(true);
   });
   Object.keys(missingBackendModules).every(key => {
-    props.toggleOverridden(
-      missingBackendModules[key].backendModules.length > 0
-    );
+    if (missingBackendModules[key].backendModules.length > 0)
+      props.toggleOverridden(true);
   });
 }
 
